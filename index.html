@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login and Registration System</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="my-4 text-center">Login and Registration</h2>
+
+      <!-- Registration Form -->
+      <div id="registrationForm" class="form-container">
+        <h4>Create Account</h4>
+        <form id="regForm">
+          <div class="form-group">
+            <label for="regName">Full Name</label>
+            <input type="text" class="form-control" id="regName" required />
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email</label>
+            <input type="email" class="form-control" id="regEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="regPassword"
+              required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            Register
+          </button>
+        </form>
+        <button class="btn btn-link btn-block mt-2" id="goToLogin">
+          Already have an account? Login
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm" class="form-container" style="display: none">
+        <h4>Login</h4>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" class="form-control" id="loginEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="loginPassword"
+              required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+        <button class="btn btn-link btn-block mt-2" id="goToRegister">
+          Don't have an account? Register
+        </button>
+      </div>
+
+      <!-- Alerts -->
+      <div id="alertContainer"></div>
+    </div>
+
+    <script>
+      const alertContainer = document.getElementById('alertContainer');
+
+      function showAlert(message, type) {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} mt-3`;
+        alert.textContent = message;
+        alertContainer.appendChild(alert);
+        setTimeout(() => alert.remove(), 3000); // Remove alert after 3 seconds
+      }
+
+      document
+        .getElementById('regForm')
+        .addEventListener('submit', function (e) {
+          e.preventDefault();
+          const fullName = document.getElementById('regName').value;
+          const email = document.getElementById('regEmail').value;
+          const password = document.getElementById('regPassword').value;
+
+          if (localStorage.getItem(email)) {
+            showAlert('Email already registered.', 'danger');
+          } else {
+            localStorage.setItem(email, JSON.stringify({ fullName, password }));
+            showAlert('Registration successful! You can now login.', 'success');
+            document.getElementById('regForm').reset();
+          }
+        });
+
+      document
+        .getElementById('loginForm')
+        .addEventListener('submit', function (e) {
+          e.preventDefault();
+          const email = document.getElementById('loginEmail').value;
+          const password = document.getElementById('loginPassword').value;
+
+          const userData = JSON.parse(localStorage.getItem(email));
+
+          if (userData && userData.password === password) {
+            showAlert('Login successful!', 'success');
+          } else {
+            showAlert('Invalid credentials.', 'danger');
+          }
+        });
+
+      document
+        .getElementById('goToLogin')
+        .addEventListener('click', function () {
+          document.getElementById('loginForm').style.display = 'block';
+          document.getElementById('registrationForm').style.display = 'none';
+        });
+
+      document
+        .getElementById('goToRegister')
+        .addEventListener('click', function () {
+          document.getElementById('loginForm').style.display = 'none';
+          document.getElementById('registrationForm').style.display = 'block';
+        });
+    </script>
+  </body>
+</html>
